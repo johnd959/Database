@@ -1,0 +1,170 @@
+SQL> 
+SQL> DROP TABLE TB_Order_Item CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Supplier CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Product_Manifest CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Customer_Order CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Product_Review CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Customer CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Product;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Category;
+
+Table dropped.
+
+SQL> DROP TABLE TB_Tax;
+
+Table dropped.
+
+SQL> 
+SQL> CREATE TABLE TB_Tax(
+  2  	 tax_prov CHAR(2)CONSTRAINT SYS_TB_TAX_PK PRIMARY KEY,
+  3  	 tax_rate NUMBER(2) NOT NULL,
+  4  	 CONSTRAINT SYS_TB_Tax_tax_prov_CK CHECK(tax_prov in ('BC', 'AB', 'SK', 'MB', 'ON', 'QC', 'NB', 'NS', 'NL', 'NT', 'NU', 'PE','YT') )
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE TB_Customer(
+  2  	 customer_number VARCHAR2(60) CONSTRAINT SYS_TB_Customer_PK PRIMARY KEY,
+  3  	 street_address VARCHAR2(60),
+  4  	 city VARCHAR2(50),
+  5  	 prov CHAR(2) CONSTRAINT SYS_TB_Customer_prov_CK CHECK (prov in ('BC', 'AB', 'SK', 'MB', 'ON', 'QC', 'NB', 'NS', 'NL', 'NT', 'NU', 'PE','YT')),
+  6  	 postal_code CHAR(6) CONSTRAINT SYS_TB_Customer_postCode_CK CHECK(regexp_like(postal_code, '[A-Z][0-9][A-Z][0-9][A-Z][0-9]')),
+  7  	 phone_number CHAR(12) CONSTRAINT SYS_TB_Customer_phoneNum_CK CHECK (regexp_like(phone_number, '[1-9][0-9]{2}.[0-9]{3}.[0-9]{4}')),
+  8  	 email_address VARCHAR2(60) CONSTRAINT SYS_TB_Customer_emailAddr_UK UNIQUE,
+  9  	 is_TimMem NUMBER(1) CONSTRAINT SYS_TB_Customer_isTimMem_CK CHECK (is_TimMem in (0, 1))
+ 10  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE TB_Category(
+  2  	 category_num VARCHAR2(60) CONSTRAINT SYS_TB_Category_PK PRIMARY KEY,
+  3  	 category_name VARCHAR2(60) NOT NULL,
+  4  	 parent_catNum VARCHAR2(60)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE TB_Product(
+  2  	 product_number VARCHAR2(60) CONSTRAINT SYS_TB_Product_PK PRIMARY KEY,
+  3  	 title VARCHAR2(300) NOT NULL,
+  4  	 product_description VARCHAR2 (4000),
+  5  	 price NUMBER(20, 2) NOT NULL,
+  6  	 weight_kg NUMBER(6,3) NOT NULL,
+  7  	 tax_exempt NUMBER(1) NOT NULL,
+  8  	 category_num VARCHAR2(60) NOT NULL
+  9  );
+
+Table created.
+
+SQL> 
+SQL> ALTER TABLE TB_Product
+  2  ADD CONSTRAINT SYS_TB_Product_price_CK CHECK (price >= 0)
+  3  ADD CONSTRAINT SYS_TB_Product_weightKG_CK CHECK (weight_kg >= 0)
+  4  ADD CONSTRAINT SYS_TB_Product_taxExempt_CK CHECK(tax_exempt in (0, 1))
+  5  ADD CONSTRAINT SYS_TB_Category_Product_FK FOREIGN KEY (category_num) REFERENCES TB_Category(category_num);
+
+Table altered.
+
+SQL> 
+SQL> CREATE TABLE TB_Customer_Order(
+  2  	 order_number VARCHAR2(60) CONSTRAINT SYS_TB_Customer_Order_PK PRIMARY KEY,
+  3  	 customer_number VARCHAr2(60) NOT NULL CONSTRAINT SYS_TB_CustomerNum_CustomOrd_FK REFERENCES TB_customer (customer_number),
+  4  	 order_item VARCHAR2(60) NOT NULL,
+  5  	 order_date DATE NOT NULL,
+  6  	 est_deliv_date DATE,
+  7  	 ship_amt NUMBER(4, 2) NOT NULL,
+  8  	 amt_tax NUMBER(2),
+  9  	 ship_prov CHAR(2) NOT NULL CONSTRAINT SYS_TB_Customer_Order_shipProv_CK CHECK (ship_prov in ('BC', 'AB', 'SK', 'MB', 'ON', 'QC', 'NB', 'NS', 'NL', 'NT', 'NU', 'PE','YT'))
+ 10  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE TB_Product_Review(
+  2  	 review_number VARCHAR2(60) CONSTRAINT SYS_TB_Product_Review_PK PRIMARY KEY,
+  3  	 customer_number VARCHAR2(60) CONSTRAINT SYS_TB_Customer_Fk REFERENCES TB_Customer(customer_number),
+  4  	 product_number VARCHAR2(60) NOT NULL CONSTRAINT SYS_TB_Product_Product_Review__FK REFERENCES TB_Product(product_number),
+  5  	 rating number(2,1) CONSTRAINT SYS_TB_Product_Review_Rating_CK CHECK (rating between 1 and 5),
+  6  	 comments VARCHAR2(4000),
+  7  	 review_date Date,
+  8  	 price number(10) NOT NULL,
+  9  	 product_weight number(6,3),
+ 10  	 tax_exempt NUMBER(1)
+ 11  );
+
+Table created.
+
+SQL> 
+SQL> ALTER TABLE TB_Product_Review
+  2  ADD CONSTRAINT SYS_TB_Product_Review_price_CK CHECK(price > 0)
+  3  ADD CONSTRAINT SYS_TB_Product_Review_product_weight_CK CHECK( product_weight > 0)
+  4  ADD CONSTRAINT SYS_TB_Product_Review_tax_exempt_CK CHECK (tax_exempt in (0,1));
+
+Table altered.
+
+SQL> 
+SQL> CREATE TABLE TB_Order_Item(
+  2  	 order_number VARCHAR2(60),
+  3  	 product_number VARCHAR2(60),
+  4  	 CONSTRAINT SYS_TB_Order_Item_PK PRIMARY KEY (order_number, product_number),
+  5  	 CONSTRAINT SYS_TB_CusOrder_OrdItem_FK FOREIGN KEY (order_number) REFERENCES TB_Customer_Order(order_number),
+  6  	 CONSTRAINT SYS_TB_Product_OrdItem_FK FOREIGN KEY (product_number) REFERENCES TB_Product(product_number)
+  7  );
+
+Table created.
+
+SQL> 
+SQL> -- CREATE TABLE TB_Category(
+SQL> --     category_num VARCHAR2(60) CONSTRAINT TB_Category_PK PRIMARY KEY,
+SQL> --     category_name VARCHAR2(60) NOT NULL,
+SQL> --     parent_category_number VARCHAR2(60)
+SQL> -- ) ;
+SQL> CREATE TABLE TB_Supplier(
+  2  	 supplier_number VARCHAR2(60) CONSTRAINT SYS_TB_Supplier_PK PRIMARY KEY,
+  3  	 supplier_name VARCHAR2(60) NOT NULL CONSTRAINT SYS_TB_Supplier_supplier_name_UK UNIQUE,
+  4  	 email VARCHAR2(60) NOT NULL CONSTRAINT SYS_TB_Supplier_emaill_UK UNIQUE,
+  5  	 supplier_city VARCHAR2(60),
+  6  	 supplier_prov CHAR(2)
+  7  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE TB_Product_Manifest(
+  2  	 supplier_number VARCHAR2(60),
+  3  	 product_number VARCHAR2(60),
+  4  	 quantity NUMBER(5) NOT NULL CONSTRAINT SYS_TB_Product_Manifest_quantity_CK CHECK(quantity >= 0),
+  5  	 est_days NUMBER(3) NOT NULL CONSTRAINT SYS_TB_Product_Manifest_est_days_CK CHECK(est_days >= 0),
+  6  	 CONSTRAINT SYS_TB_Product_Manifest_PK PRIMARY KEY(supplier_number,product_number),
+  7  	 CONSTRAINT SYS_TB_Supplier_ProductManifest_FK FOREIGN KEY(supplier_number) REFERENCES TB_Supplier(supplier_number),
+  8  	 CONSTRAINT SYS_TB_Category_ProductManifest_FK FOREIGN KEY(product_number) REFERENCES TB_Product(product_number)
+  9  );
+
+Table created.
+
+SQL> 
+SQL> SPOOL OFF

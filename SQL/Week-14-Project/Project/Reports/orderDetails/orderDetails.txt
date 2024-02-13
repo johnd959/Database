@@ -1,0 +1,27 @@
+SQL> 
+SQL> SET linesize 200
+SQL> SET pagesize 120
+SQL> 
+SQL> column "Order#" format a10
+SQL> column "Customer#" format a10
+SQL> column "Order Item" format a15
+SQL> column "Order Date" format a10
+SQL> column "Shipping" format 9990.99
+SQL> column "Shipping Province" format a20
+SQL> column "Tax%" format 90.99
+SQL> 
+SQL> SELECT order_number "Order#", customer_number "Customer#", order_item "Order Item", order_date "Order Date", to_char(ship_amt, '$9990.99') "Shipping",
+  2  ship_prov "Shipping Province", tax_rate "Tax%"
+  3  FROM TB_Customer_Order JOIN TB_Tax ON(TB_Customer_Order.ship_prov = TB_Tax.tax_prov)
+  4  WHERE TB_Customer_Order.customer_number = (SELECT TB_customer.customer_number
+  5  FROM TB_Customer
+  6  WHERE email_address Like 'amelia.cox@%');
+
+Order#     Customer#  Order Item      Order Date Shipping  Shipping Province      Tax%                                                                                                                  
+---------- ---------- --------------- ---------- --------- -------------------- ------                                                                                                                  
+1111       11         1               16-APR-22     $10.00 AB                     5.00                                                                                                                  
+1234       11         6               01-OCT-23     $10.00 AB                     5.00                                                                                                                  
+
+SQL> 
+SQL> clear columns
+SQL> spool off

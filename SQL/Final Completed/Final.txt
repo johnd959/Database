@@ -1,0 +1,93 @@
+SQL> set linesize 200
+SQL> set pagesize 120
+SQL> 
+SQL> --Solution for Question 1--
+SQL> SELECT entertainerID "Enter ID", clientID "Client ID", startDate "Date",
+  2  clientFee "Client Fee"
+  3  FROM hn_EntertainerGig
+  4  WHERE rtrim(to_char(startDate, 'MONTH'), ' ') = 'MAY'
+  5  ORDER BY 3 DESC;
+
+  Enter ID  Client ID Date      Client Fee                                                                                                                                                              
+---------- ---------- --------- ----------                                                                                                                                                              
+         4          2 22-MAY-21      10000                                                                                                                                                              
+         4          1 22-MAY-21       5000                                                                                                                                                              
+         6          2 22-MAY-21       6000                                                                                                                                                              
+         3          1 21-MAY-21       5000                                                                                                                                                              
+
+SQL> 
+SQL> 
+SQL> --Solution For Question 2--
+SQL> column "Client Name" format A30
+SQL> 
+SQL> SELECT c.firstName || ' ' || c.lastName "Client Name", startDate, clientFee, stageName, eventType
+  2  FROM hn_Client c JOIN hn_EntertainerGig eg USING(clientID)
+  3  JOIN hn_Entertainer e USING(entertainerID)
+  4  ORDER BY c.lastName, startDate;
+
+Client Name                    STARTDATE  CLIENTFEE STAGENAME                                          EVENTTYPE                                                                                        
+------------------------------ --------- ---------- -------------------------------------------------- --------------------------------------------------                                               
+Eddie Davis                    01-JUL-21       4000 Jeff Dunham                                        Puppet Ventriloquist                                                                             
+Johnny Gaudreau                21-MAY-21       5000 Chris Rock                                         Stand-up Comedy                                                                                  
+Johnny Gaudreau                22-MAY-21       5000 Drake                                              Rap Singer                                                                                       
+Auston Matthews                02-AUG-21      10000 Drake                                              Rap Singer                                                                                       
+TJ Miller                      22-MAY-21       6000 Justin Bieber                                      Multi-instrumentalist Singer                                                                     
+TJ Miller                      22-MAY-21      10000 Drake                                              Rap Singer                                                                                       
+Elias Pettersson               02-AUG-21       7000 Jay-Z                                              Rap Singer                                                                                       
+
+7 rows selected.
+
+SQL> clear columns
+SQL> 
+SQL> 
+SQL> --Solution for Question 3--
+SQL> column "Client First" format a20
+SQL> column "Client Last" format a20
+SQL> column "Stage Name" format a20
+SQL> column "Address" format a50
+SQL> 
+SQL> SELECT c.firstName "Client First", c.lastName "Client Last", stageName "Stage Name",
+  2  	    to_char(startDate, 'Mon DD, YYYY, HH:MI am') "Event date/time", street || ', ' || City || ', ' || prov "Address"
+  3  FROM hn_Client c JOIN hn_EntertainerGig eg USING (clientID)
+  4  	  JOIN hn_Entertainer e USING(entertainerID)
+  5  ORDER BY c.lastname, to_char(startDate, 'HH:MIam');
+
+Client First         Client Last          Stage Name           Event date/time                 Address                                                                                                  
+-------------------- -------------------- -------------------- ------------------------------- --------------------------------------------------                                                       
+Eddie                Davis                Jeff Dunham          Jul 01, 2021, 08:00 pm          1020 8 Ave SW, Calgary, AB                                                                               
+Johnny               Gaudreau             Chris Rock           May 21, 2021, 04:00 pm          555 Saddledome Rise SE, Calgary, AB                                                                      
+Johnny               Gaudreau             Drake                May 22, 2021, 08:00 pm          555 Saddledome Rise SE, Calgary, AB                                                                      
+Auston               Matthews             Drake                Aug 02, 2021, 06:00 pm          40 Bay St, Toronto, ON                                                                                   
+TJ                   Miller               Justin Bieber        May 22, 2021, 08:00 pm          215 8 Ave SE, Calgary, AB                                                                                
+TJ                   Miller               Drake                May 22, 2021, 10:00 pm          215 8 Ave SE, Calgary, AB                                                                                
+Elias                Pettersson           Jay-Z                Aug 02, 2021, 10:00 pm          1608 Commercial Dr, Vancouver, BC                                                                        
+
+7 rows selected.
+
+SQL> clear columns;
+SQL> 
+SQL> 
+SQL> --Solution for Question 4--
+SQL> SELECT to_char(SUM(clientFee), '$99,990.00') "Total", to_char(MAX(clientFee), '$99,990.00') "Most Expensive", to_char(AVG(clientFee), '$99,990.00') "Avg Price", count(*) "Number"
+  2  FROM hn_EntertainerGig;
+
+Total       Most Expens Avg Price       Number                                                                                                                                                          
+----------- ----------- ----------- ----------                                                                                                                                                          
+ $47,000.00  $10,000.00   $6,714.29          7                                                                                                                                                          
+
+SQL> 
+SQL> 
+SQL> --Solution for question 5--
+SQL> SELECT stageName "Stagename", clientID, startDate, entertainerFee
+  2  FROM hn_EntertainerGig JOIN hn_Entertainer USING(entertainerID)
+  3  WHERE entertainerFee > (SELECT avg(entertainerFee)
+  4  			     FROM hn_EntertainerGig)
+  5  ;
+
+Stagename                                            CLIENTID STARTDATE ENTERTAINERFEE                                                                                                                  
+-------------------------------------------------- ---------- --------- --------------                                                                                                                  
+Drake                                                       2 22-MAY-21           8000                                                                                                                  
+Drake                                                       4 02-AUG-21           6000                                                                                                                  
+Jay-Z                                                       5 02-AUG-21           5000                                                                                                                  
+
+SQL> SPOOL OFF

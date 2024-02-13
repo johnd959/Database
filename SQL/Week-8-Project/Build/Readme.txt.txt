@@ -1,0 +1,1 @@
+Open SQLPlus and run: start "[path to the included .sql file]"

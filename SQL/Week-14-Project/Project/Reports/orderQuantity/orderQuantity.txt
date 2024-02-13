@@ -1,0 +1,26 @@
+SQL> 
+SQL> set linesize 200
+SQL> set pagesize 120
+SQL> 
+SQL> column "Customer#" format a10;
+SQL> column "Number of Orders#" format a20;
+SQL> column "Total Costs" format a10;
+SQL> 
+SQL> select customer_number "Customer#" , count(*) "Number of Orders", to_char(sum(price * (1 + amt_tax) + ship_amt), '$9,990.00') "Total Costs"
+  2  from TB_product p join TB_order_item oi ON(p.product_number = oi.product_number)
+  3  	 join TB_customer_order co on(oi.order_number = co.order_number)
+  4  group by customer_number
+  5  order by 1;
+
+Customer#  Number of Orders Total Cost                                                                                                                                                                  
+---------- ---------------- ----------                                                                                                                                                                  
+11                        2  $1,381.70                                                                                                                                                                  
+22                        2    $253.64                                                                                                                                                                  
+33                        1    $673.48                                                                                                                                                                  
+44                        1  $2,140.00                                                                                                                                                                  
+55                        1    $236.14                                                                                                                                                                  
+
+SQL> 
+SQL> 
+SQL> clear columns
+SQL> spool off

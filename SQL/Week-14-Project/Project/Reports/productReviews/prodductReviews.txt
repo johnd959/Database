@@ -1,0 +1,33 @@
+SQL> column "Reviews" format a30;
+SQL> column "Product ID" format a10;
+SQL> column "Customer#" format a10;
+SQL> column "Email" format a30;
+SQL> column "Ratings" format 0.0;
+SQL> 
+SQL> set verify off
+SQL> accept productID CHAR prompt "Enter the product ID: "
+Enter the product ID: 1
+SQL> 
+SQL> 
+SQL> select TB_Product.product_number "Product ID", TB_Customer.customer_number "Customer#", email_address "Email", rating "Ratings", comments "Reviews"
+  2  from TB_product JOIN TB_order_item ON(TB_Product.product_number = TB_Order_Item.product_number)
+  3  JOIN TB_customer_order ON(TB_order_item.order_number = TB_Customer_order.order_number)
+  4  join TB_customer ON(TB_customer_order.customer_number = TB_Customer.customer_number)
+  5  join TB_product_review ON(TB_customer.customer_number = TB_product_review.customer_number)
+  6  where TB_Product.product_number = to_char(&productID)
+  7  order by 2;
+
+Product ID Customer#  Email                          Ratings Reviews                                                                                                                                    
+---------- ---------- ------------------------------ ------- ------------------------------                                                                                                             
+1          11         amelia.cox@ymail.com               4.9 This product exceeded my expec                                                                                                             
+                                                             tations! I would definitely re                                                                                                             
+                                                             commend it to anyone looking f                                                                                                             
+                                                             or a reliable and high-quality                                                                                                             
+                                                              option.                                                                                                                                   
+                                                                                                                                                                                                        
+1          11         amelia.cox@ymail.com               1.0                                                                                                                                            
+
+SQL> 
+SQL> 
+SQL> clear columns
+SQL> spool off

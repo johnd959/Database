@@ -1,0 +1,20 @@
+SQL> 
+SQL> ALTER TABLE MT_Home
+  2  ADD purchase_price NUMBER(9,2);
+
+Table altered.
+
+SQL> 
+SQL> ALTER TABLE MT_Furniture
+  2  ADD purchase_date DATE DEFAULT SYSDATE;
+
+Table altered.
+
+SQL> 
+SQL> ALTER TABLE MT_Furniture
+  2  MODIFY (price NOT NULL);
+
+Table altered.
+
+SQL> 
+SQL> SPOOL OFF

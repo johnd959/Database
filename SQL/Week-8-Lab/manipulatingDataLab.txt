@@ -1,0 +1,297 @@
+SQL> 
+SQL> delete ghc_expertise;
+
+9 rows deleted.
+
+SQL> delete ghc_faculty;
+
+4 rows deleted.
+
+SQL> delete ghc_course;
+
+9 rows deleted.
+
+SQL> delete ghc_department;
+
+3 rows deleted.
+
+SQL> 
+SQL> insert into ghc_department (dept_no, dept_name) values (25, 'ICT');
+
+1 row created.
+
+SQL> insert into ghc_department (dept_no, dept_name) values (26, 'Business');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> insert into ghc_course (course_code, course_title, credits)
+  2  values ('CMPS253',      'Interface Design				 ',3);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_course (course_code, course_title, credits)
+  2  values ('CPRG250',      'Database Design and Programming		 ',5);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_course (course_code, course_title, credits)
+  2  values ('CPRG251',      'Object Oriented Programming Essentials ',5);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_course (course_code, course_title, credits)
+  2  values ('CPRG302',      'Web Essentials			     ',3);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_course (course_code, course_title, credits)
+  2  values ('HREL250',      'Business Dynamics 			 ',3);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> insert into ghc_faculty (faculty_id, surname, firstname, date_hired, date_fired, is_active, dept_no)
+  2  values (1294,   'Harris	', '  Len      ',  '15-Dec-19',      NULL,	     1,      25);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_faculty (faculty_id, surname, firstname, date_hired, date_fired, is_active, dept_no)
+  2  values (1244,   'Lock	  ', 'Sara	', '15-Dec-19',      '1-May-20',     0,      25);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_faculty (faculty_id, surname, firstname, date_hired, date_fired, is_active, dept_no)
+  2  values (1948,   'Fischer	       ', '   Jenny',		 '15-Mar-21',	     NULL,	     1,      26);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_faculty (faculty_id, surname, firstname, date_hired, date_fired, is_active, dept_no)
+  2  values (7839,   'Wallbanger', '  Harvey',		 '15-Aug-02',		     NULL,	  1, 25);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (1294,   'CMPS253');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (1294,   'CPRG302');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (1294,   'CPRG251');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (1948,   'HREL250');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (7839,   'CPRG251');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (7839,   'CPRG250');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (7839,   'CMPS253');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (1244,   'HREL250');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code)
+  2  values (1244,   'CMPS253');
+
+1 row created.
+
+SQL> 
+SQL> --lab data
+SQL> 
+SQL> insert into ghc_department (dept_no, dept_name) values (100, 'Astrophysics');
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_faculty (faculty_id, surname, firstname, date_hired, date_fired, is_active, dept_no)
+  2  values (1001, 'Danny', 'Faulkner', '1-Jan-2022', NULL, 1, 100);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_course (course_code, course_title, credits) values ('APHY202', 'The Solar System', 5);
+
+1 row created.
+
+SQL> insert into ghc_course (course_code, course_title, credits) values ('APHY203', 'Nebula', 5);
+
+1 row created.
+
+SQL> insert into ghc_course (course_code, course_title, credits) values ('APHY204', 'Global Clusters', 5);
+
+1 row created.
+
+SQL> 
+SQL> insert into ghc_expertise (faculty_id, course_code) values (1001, 'APHY202');
+
+1 row created.
+
+SQL> insert into ghc_expertise (faculty_id, course_code) values (1001, 'APHY203');
+
+1 row created.
+
+SQL> insert into ghc_expertise (faculty_id, course_code) values (1001, 'APHY204');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ghc_course (course_code, course_title, credits) values ('APHY302', 'Nebula', 5);
+
+1 row created.
+
+SQL> 
+SQL> UPDATE ghc_expertise
+  2  SET course_code = 'APHY302'
+  3  WHERE course_code = 'APHY203';
+
+1 row updated.
+
+SQL> 
+SQL> DELETE ghc_course
+  2  WHERE course_code = 'APHY203';
+
+1 row deleted.
+
+SQL> 
+SQL> DELETE ghc_expertise
+  2  WHERE faculty_id = 1001;
+
+3 rows deleted.
+
+SQL> 
+SQL> DELETE ghc_faculty
+  2  WHERE faculty_id = 1001;
+
+1 row deleted.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> 
+SQL> select * from ghc_course;
+
+COURSE_ COURSE_TITLE                                                    CREDITS 
+------- ------------------------------------------------------------ ---------- 
+CMPS253 Interface Design	                                                     3 
+CPRG250 Database Design and Programming	                                      5 
+CPRG251 Object Oriented Programming Essentials	                               5 
+CPRG302 Web Essentials	                                                       3 
+HREL250 Business Dynamics	                                                    3 
+APHY202 The Solar System                                                      5 
+APHY204 Global Clusters                                                       5 
+APHY302 Nebula                                                                5 
+
+8 rows selected.
+
+SQL> select * from ghc_department;
+
+   DEPT_NO DEPT_NAME                                                            
+---------- --------------------                                                 
+        25 ICT                                                                  
+        26 Business                                                             
+       100 Astrophysics                                                         
+
+SQL> select * from ghc_expertise;
+
+FACULTY_ID COURSE_                                                              
+---------- -------                                                              
+      1244 CMPS253                                                              
+      1244 HREL250                                                              
+      1294 CMPS253                                                              
+      1294 CPRG251                                                              
+      1294 CPRG302                                                              
+      1948 HREL250                                                              
+      7839 CMPS253                                                              
+      7839 CPRG250                                                              
+      7839 CPRG251                                                              
+
+9 rows selected.
+
+SQL> select * from ghc_faculty;
+
+FACULTY_ID SURNAME                                                              
+---------- --------------------------------------------------                   
+FIRSTNAME                                          DATE_HIRE DATE_FIRE          
+-------------------------------------------------- --------- ---------          
+ IS_ACTIVE    DEPT_NO                                                           
+---------- ----------                                                           
+      1294 Harris	                                                              
+  Len	                                             15-DEC-19                    
+         1         25                                                           
+                                                                                
+      1244 Lock	                                                                
+Sara	                                              15-DEC-19 01-MAY-20          
+         0         25                                                           
+
+FACULTY_ID SURNAME                                                              
+---------- --------------------------------------------------                   
+FIRSTNAME                                          DATE_HIRE DATE_FIRE          
+-------------------------------------------------- --------- ---------          
+ IS_ACTIVE    DEPT_NO                                                           
+---------- ----------                                                           
+                                                                                
+      1948 Fischer	                                                             
+   Jenny                                           15-MAR-21                    
+         1         26                                                           
+                                                                                
+      7839 Wallbanger                                                           
+	 Harvey                                           15-AUG-02                    
+
+FACULTY_ID SURNAME                                                              
+---------- --------------------------------------------------                   
+FIRSTNAME                                          DATE_HIRE DATE_FIRE          
+-------------------------------------------------- --------- ---------          
+ IS_ACTIVE    DEPT_NO                                                           
+---------- ----------                                                           
+         1         25                                                           
+                                                                                
+
+SQL> 
+SQL> spool off

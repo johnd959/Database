@@ -1,0 +1,1 @@
+to populate the tables, open SQLPLus and run: start "[the path to the included script]";

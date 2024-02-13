@@ -1,0 +1,118 @@
+SQL> 
+SQL> --Q1--
+SQL> /*SELECT tour_code, sum(price)
+SQL> FROM RCV_Tour_Destination JOIN RCV_Destination USING(dest_code)
+SQL> GROUP BY RCV_Tour_Destination.tour_code;
+SQL> 
+SQL> SELECT max(sum(price))
+SQL> FROM RCV_Tour_Destination JOIN RCV_Destination USING(dest_code)
+SQL> GROUP BY RCV_Tour_Destination.tour_code;
+SQL> */
+SQL> --Solution--
+SQL> SELECT tour_description, to_char(sum(price), '$9990.00') "Price"
+  2  FROM RCV_Vacation_Tour JOIN RCV_Tour_Destination USING(tour_code)
+  3  JOIN RCV_Destination USING (dest_code)
+  4  GROUP BY tour_description
+  5  HAVING sum(price) = (SELECT max(sum(price))
+  6  FROM RCV_Tour_Destination JOIN RCV_Destination USING(dest_code)
+  7  GROUP BY RCV_Tour_Destination.tour_code);
+
+TOUR_DESCRIPTION                                   Price                                                                                                                                                
+-------------------------------------------------- ---------                                                                                                                                            
+Palm Springs Adventure                              $1390.45                                                                                                                                            
+
+SQL> 
+SQL> --Q2--
+SQL> 
+SQL> /*SELECT tour_description, sum(price)
+SQL> FROM RCV_Destination JOIN RCV_Tour_Destination USING(dest_code)
+SQL> JOIN RCV_Vacation_Tour USING (tour_code)
+SQL> WHERE tour_region = 'CA'
+SQL> GROUP BY tour_description; */
+SQL> 
+SQL> --Solution--
+SQL> SELECT tour_description, to_char(sum(price), '$9990.00') "Price"
+  2  FROM RCV_Destination JOIN RCV_Tour_Destination USING(dest_code)
+  3  JOIN RCV_Vacation_Tour USING(tour_code)
+  4  WHERE tour_region = 'EU'
+  5  GROUP BY tour_description
+  6  HAVING sum(price) >ANY (SELECT sum(price)
+  7  FROM RCV_Destination JOIN RCV_Tour_Destination USING(dest_code)
+  8  JOIN RCV_Vacation_Tour USING (tour_code)
+  9  WHERE tour_region = 'CA'
+ 10  GROUP BY tour_description);
+
+TOUR_DESCRIPTION                                   Price                                                                                                                                                
+-------------------------------------------------- ---------                                                                                                                                            
+France in 4 Days                                     $748.41                                                                                                                                            
+European Vacation                                   $1299.47                                                                                                                                            
+Paris Culture Tour                                   $792.90                                                                                                                                            
+Sights of Barcelona                                  $917.43                                                                                                                                            
+
+SQL> 
+SQL> --Q3--
+SQL> 
+SQL> SELECT dest_description, to_char(price, '$9990.00') "Price"
+  2  FROM RCV_Destination
+  3  WHERE price < (SELECT avg(price)
+  4  FROM RCV_Destination);
+
+DEST_DESCRIPTION                                                                                     Price                                                                                              
+---------------------------------------------------------------------------------------------------- ---------                                                                                          
+Skip the Line Ticket: Eiffel Tower Summit Priority Access with Host                                    $102.99                                                                                          
+Gourmet Dinner & Sightseeing Cruise                                                                    $114.99                                                                                          
+Bateaux Parisiens Seine River Cruise                                                                    $75.75                                                                                          
+Bateaux Parisiens Seine River Gourmet Dinner & Sightseeing Cruise                                      $162.73                                                                                          
+Disneyland Paris 1-Day Ticket                                                                           $76.90                                                                                          
+French Riviera in One Day                                                                               $89.26                                                                                          
+Nice Small-Group Walking Food Tour with Local Specialties & Wine Tasting                                $96.13                                                                                          
+Nice Local Vineyards Small Group Half Day E-Bike Tour with Wine Tasting                                $109.86                                                                                          
+French Riviera Famous Cities Scoot Coupe Self Drive Tour from Nice                                      $96.13                                                                                          
+Interactive Spanish Cooking Experience in Barcelona                                                     $72.76                                                                                          
+Girona and Dali Museum Small Group Tour with Hotel Pick-up from Barcelona                              $136.76                                                                                          
+Sunset Jazz Cruise in Barcelona                                                                         $49.95                                                                                          
+Modern & More Bike Tours Palm Springs                                                                   $49.95                                                                                          
+Earthquake Canyon Express Downhill Bicycle Adventure                                                   $157.63                                                                                          
+Palm Springs Windmill Tours                                                                             $69.23                                                                                          
+Private French-Inspired Cooking Class with a Fun Local in Palm Springs, CA                             $139.24                                                                                          
+Private Surf Lesson Newport Beach, California                                                          $179.55                                                                                          
+Lake Louise & Yoho N.P & Moraine Lake 1-Day Tour from Calgary or Banff                                 $146.32                                                                                          
+Calgary Stampede - Day pass Rodeo                                                                      $131.00                                                                                          
+2-Hour Horseback Trail Ride in Kananaskis                                                              $131.25                                                                                          
+Voyageur Canoe Tour                                                                                     $63.00                                                                                          
+Blackshale Suspension Bridge & Sightseeing Tour                                                        $155.00                                                                                          
+Heritage Park - the 1883 experience                                                                     $79.99                                                                                          
+Cycling the Bow                                                                                         $39.94                                                                                          
+Familia Sagrada Guided Tour                                                                             $70.03                                                                                          
+Rock climbing at COP                                                                                    $59.95                                                                                          
+Sulfur Mountain Gondola and Banff Hot Springs                                                          $121.00                                                                                          
+Palm Springs On/Off City Tour                                                                           $29.95                                                                                          
+Palm Springs Art Museum Guided Tour                                                                     $39.95                                                                                          
+
+29 rows selected.
+
+SQL> 
+SQL> --Q4--
+SQL> 
+SQL> SELECT RCV_Customer.first_name, RCV_Customer.last_name
+  2  FROM RCV_Customer JOIN RCV_Tour_Customer USING (customer_number)
+  3  WHERE tour_code IN (SELECT tour_code
+  4  FROM RCV_Tour_Customer JOIN RCV_Customer USING(customer_number)
+  5  JOIN RCV_Agent USING (agent_id)
+  6  WHERE RCV_Agent.first_name = 'Ethan'
+  7  AND RCV_Agent.last_name = 'Hunt')
+  8  AND RCV_Customer.agent_id != (Select agent_id
+  9  FROM RCV_Agent
+ 10  WHERE first_name = 'Ethan'
+ 11  AND last_name = 'Hunt')
+ 12  ;
+
+FIRST_NAME                     LAST_NAME                                                                                                                                                                
+------------------------------ ------------------------------                                                                                                                                           
+Lionel                         Messie                                                                                                                                                                   
+Amy                            Folwer                                                                                                                                                                   
+Amy                            Folwer                                                                                                                                                                   
+Bernadette                     Rostenkowski-Wolowitz                                                                                                                                                    
+Raj                            Koothrappali                                                                                                                                                             
+
+SQL> SPOOL OFF

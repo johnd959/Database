@@ -1,0 +1,140 @@
+SQL> set linesize 200
+SQL> set pagesize 66
+SQL> 
+SQL> 
+SQL> 
+SQL> --Question 1--
+SQL> column tour_description format a60
+SQL> column dest_description format a75
+SQL> column tour_description format a25
+SQL> break on first_name on last_name
+SQL> SELECT first_name, last_name, tour_description, order#, dest_description
+  2  FROM RCV_Customer JOIN RCV_Tour_Customer USING(customer_number)
+  3  JOIN RCV_Vacation_Tour USING (tour_code)
+  4  JOIN RCV_Tour_Destination USING(tour_code)
+  5  JOIN RCV_Destination USING(dest_code)
+  6  WHERE first_name = 'Sheldon'
+  7  AND last_name = 'Cooper'
+  8  ORDER BY last_name, first_name, tour_description, order#;
+
+FIRST_NAME                     LAST_NAME                      TOUR_DESCRIPTION              ORDER# DEST_DESCRIPTION                                                                                     
+------------------------------ ------------------------------ ------------------------- ---------- ---------------------------------------------------------------------------                          
+Sheldon                        Cooper                         Calgary Highlights                 1 Calgary City Sightseeing Tour                                                                        
+                                                              Calgary Highlights                 2 Sulfur Mountain Gondola and Banff Hot Springs                                                        
+                                                              Calgary Highlights                 3 Heritage Park - the 1883 experience                                                                  
+                                                              Calgary Stampede                   1 Calgary Stampede - Chuckwagon Races and Grandstand Show                                              
+                                                              Calgary Stampede                   2 Calgary Stampede - Day pass Rodeo                                                                    
+                                                              Calgary Stampede                   3 Calgary City Sightseeing Tour                                                                        
+                                                              Paris Highlights                   1 Skip the Line Ticket: Eiffel Tower Summit Priority Access with Host                                  
+                                                              Paris Highlights                   2 Gourmet Dinner & Sightseeing Cruise                                                                  
+                                                              Paris Highlights                   3 Bateaux Parisiens Seine River Cruise                                                                 
+                                                              Paris Highlights                   4 Disneyland Paris 1-Day Ticket                                                                        
+
+10 rows selected.
+
+SQL> 
+SQL> 
+SQL> --Question 2--
+SQL> break on first_name on last_name
+SQL> SELECT first_name, last_name, tour_description, order#, dest_description
+  2  FROM RCV_Customer c, RCV_Tour_Customer tc, RCV_Vacation_Tour vt, RCV_Tour_Destination td,
+  3  RCV_Destination d
+  4  WHERE c.customer_number = tc.customer_number
+  5  AND tc.tour_code = vt.tour_code
+  6  AND vt.tour_code = td.tour_code
+  7  AND td.dest_code = d.dest_code
+  8  AND first_name = 'Sheldon'
+  9  AND last_name = 'Cooper'
+ 10  ORDER BY last_name, first_name, tour_description, order#;
+
+FIRST_NAME                     LAST_NAME                      TOUR_DESCRIPTION              ORDER# DEST_DESCRIPTION                                                                                     
+------------------------------ ------------------------------ ------------------------- ---------- ---------------------------------------------------------------------------                          
+Sheldon                        Cooper                         Calgary Highlights                 1 Calgary City Sightseeing Tour                                                                        
+                                                              Calgary Highlights                 2 Sulfur Mountain Gondola and Banff Hot Springs                                                        
+                                                              Calgary Highlights                 3 Heritage Park - the 1883 experience                                                                  
+                                                              Calgary Stampede                   1 Calgary Stampede - Chuckwagon Races and Grandstand Show                                              
+                                                              Calgary Stampede                   2 Calgary Stampede - Day pass Rodeo                                                                    
+                                                              Calgary Stampede                   3 Calgary City Sightseeing Tour                                                                        
+                                                              Paris Highlights                   1 Skip the Line Ticket: Eiffel Tower Summit Priority Access with Host                                  
+                                                              Paris Highlights                   2 Gourmet Dinner & Sightseeing Cruise                                                                  
+                                                              Paris Highlights                   3 Bateaux Parisiens Seine River Cruise                                                                 
+                                                              Paris Highlights                   4 Disneyland Paris 1-Day Ticket                                                                        
+
+10 rows selected.
+
+SQL> 
+SQL> --Question 3--
+SQL> SELECT UNIQUE dest_description, first_name, last_name
+  2  FROM RCV_Destination LEFT JOIN RCV_Tour_Destination ON (RCV_Destination.dest_code = RCV_Tour_Destination.dest_code)
+  3  LEFT JOIN RCV_Tour_Customer ON (RCV_Tour_Destination.tour_code = RCV_Tour_Customer.tour_code)
+  4  LEFT JOIN RCV_Customer ON (RCV_Tour_Customer.customer_number = RCV_Customer.customer_number)
+  5  WHERE RCV_Destination.country = 'Canada'
+  6  ORDER BY dest_description;
+
+DEST_DESCRIPTION                                                            FIRST_NAME                     LAST_NAME                                                                                    
+--------------------------------------------------------------------------- ------------------------------ ------------------------------                                                               
+2-Hour Horseback Trail Ride in Kananaskis                                   Lionel                         Messie                                                                                       
+Blackshale Suspension Bridge & Sightseeing Tour                                                                                                                                                         
+Calgary City Sightseeing Tour                                               Amy                            Folwer                                                                                       
+Calgary City Sightseeing Tour                                               Bernadette                     Rostenkowski-Wolowitz                                                                        
+Calgary City Sightseeing Tour                                               Lionel                         Messie                                                                                       
+Calgary City Sightseeing Tour                                               Penny                          Hofstadter                                                                                   
+Calgary City Sightseeing Tour                                               Raj                            Koothrappali                                                                                 
+Calgary City Sightseeing Tour                                               Sheldon                        Cooper                                                                                       
+Calgary Stampede - Chuckwagon Races and Grandstand Show                     Amy                            Folwer                                                                                       
+Calgary Stampede - Chuckwagon Races and Grandstand Show                     Bernadette                     Rostenkowski-Wolowitz                                                                        
+Calgary Stampede - Chuckwagon Races and Grandstand Show                     Penny                          Hofstadter                                                                                   
+Calgary Stampede - Chuckwagon Races and Grandstand Show                     Raj                            Koothrappali                                                                                 
+Calgary Stampede - Chuckwagon Races and Grandstand Show                     Sheldon                        Cooper                                                                                       
+Calgary Stampede - Day pass Rodeo                                           Amy                            Folwer                                                                                       
+Calgary Stampede - Day pass Rodeo                                           Bernadette                     Rostenkowski-Wolowitz                                                                        
+Calgary Stampede - Day pass Rodeo                                           Penny                          Hofstadter                                                                                   
+Calgary Stampede - Day pass Rodeo                                           Raj                            Koothrappali                                                                                 
+Calgary Stampede - Day pass Rodeo                                           Sheldon                        Cooper                                                                                       
+Calgary to Royal Tyrell Museum | Drumheller | Badland – Private Sightseei                                                                                                                             
+ng Tour                                                                                                                                                                                                 
+                                                                                                                                                                                                        
+Cycling the Bow                                                                                                                                                                                         
+Heritage Park - the 1883 experience                                         Amy                            Folwer                                                                                       
+Heritage Park - the 1883 experience                                         Penny                          Hofstadter                                                                                   
+Heritage Park - the 1883 experience                                         Sheldon                        Cooper                                                                                       
+Heritage Park - the 1883 experience                                                                                                                                                                     
+Lake Louise & Yoho N.P & Moraine Lake 1-Day Tour from Calgary or Banff                                                                                                                                  
+Rock climbing at COP                                                                                                                                                                                    
+Rocky Mountaineer - 3 Day Train Adventure                                   Lionel                         Messie                                                                                       
+Sulfur Mountain Gondola and Banff Hot Springs                               Amy                            Folwer                                                                                       
+Sulfur Mountain Gondola and Banff Hot Springs                               Lionel                         Messie                                                                                       
+Sulfur Mountain Gondola and Banff Hot Springs                               Penny                          Hofstadter                                                                                   
+Sulfur Mountain Gondola and Banff Hot Springs                               Sheldon                        Cooper                                                                                       
+Voyageur Canoe Tour                                                         Lionel                         Messie                                                                                       
+
+32 rows selected.
+
+SQL> 
+SQL> --Question 4--
+SQL> column training_description format a60
+SQL> break on first_name on last_name
+SQL> SELECT first_name, last_name, training_description, date_completed "Date Comp."
+  2  FROM RCV_Agent JOIN RCV_Agent_Training USING(agent_id)
+  3  JOIN RCV_Training USING(training_code)
+  4  ORDER BY first_name, last_name, training_description, date_completed;
+
+FIRST_NAME LAST_NAME  TRAINING_DESCRIPTION                                         Date Comp                                                                                                            
+---------- ---------- ------------------------------------------------------------ ---------                                                                                                            
+Anna       Chapman    Building client relationships                                08-MAY-22                                                                                                            
+                      Customer Relations                                           01-MAY-22                                                                                                            
+                      Dealing with difficult customers                             01-OCT-22                                                                                                            
+                      Touring Europe                                               02-OCT-22                                                                                                            
+Ethan      Hunt       Building client relationships                                08-MAY-22                                                                                                            
+                      Customer Relations                                           01-MAY-22                                                                                                            
+                      Touring the US                                               01-SEP-22                                                                                                            
+Valerie    Plume      Building client relationships                                08-MAY-22                                                                                                            
+                      Customer Relations                                           01-MAY-22                                                                                                            
+                      Dealing with difficult customers                             01-OCT-22                                                                                                            
+                      Touring the US                                               01-SEP-22                                                                                                            
+
+11 rows selected.
+
+SQL> 
+SQL> clear columns
+SQL> SPOOL off

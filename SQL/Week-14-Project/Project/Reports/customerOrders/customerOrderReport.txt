@@ -1,0 +1,28 @@
+SQL> 
+SQL> set linesize 200
+SQL> set pagesize 120
+SQL> 
+SQL> column "Customer#" format a10;
+SQL> column "Email#" format a20;
+SQL> column "Order#" format a10;
+SQL> column "Timber member?" format a15;
+SQL> select customer_number "Customer#", email_address "Email", order_number "Order#",
+  2  	     case is_TimMem when 1 then 'Yes' else 'No' end "Timber member?"
+  3  from TB_customer join TB_customer_order using (customer_number)
+  4  order by 1,2 ;
+
+Customer#  Email                                                        Order#     Timber member?                                                                                                       
+---------- ------------------------------------------------------------ ---------- ---------------                                                                                                      
+11         amelia.cox@ymail.com                                         1111       Yes                                                                                                                  
+11         amelia.cox@ymail.com                                         1234       Yes                                                                                                                  
+22         heather_m_torres@outlook.com                                 2222       Yes                                                                                                                  
+22         heather_m_torres@outlook.com                                 4321       Yes                                                                                                                  
+33         thisthat@gmail.com                                           3333       No                                                                                                                   
+44         adamsbarnes@outlook.com                                      4444       Yes                                                                                                                  
+55         yellothere@gmail.com                                         5555       No                                                                                                                   
+
+7 rows selected.
+
+SQL> clear columns
+SQL> 
+SQL> spool off

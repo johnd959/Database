@@ -1,0 +1,107 @@
+SQL> 
+SQL> --Q1--
+SQL> SELECT isbn, initcap(title) "Title", NVL2(discount, 'Fixed Discount', '20% discount') "Discount Type",
+  2  	 to_char(retail, '$9,990.00') "Orig Price",
+  3  	 to_char(nvl(discount, retail*0.2), '$9,990.00')  "Discount",
+  4  	 to_char(nvl(retail-discount, retail - retail * 0.2), '$9,990.00') "Final $"
+  5  FROM books
+  6  ORDER BY 2;
+
+ISBN       Title                          Discount Type  Orig Price Discount   Final $                                                                                                                  
+---------- ------------------------------ -------------- ---------- ---------- ----------                                                                                                               
+8117949391 Big Bear And Little Dove       20% discount        $8.95      $1.79      $7.16                                                                                                               
+1059831198 Bodybuild In 10 Minutes A Day  20% discount       $30.95      $6.19     $24.76                                                                                                               
+4981341710 Building A Car With Toothpicks Fixed Discount     $59.95      $3.00     $56.95                                                                                                               
+3437212490 Cooking With Mushrooms         20% discount       $19.95      $3.99     $15.96                                                                                                               
+8843172113 Database Implementation        20% discount       $55.95     $11.19     $44.76                                                                                                               
+9959789321 E-Business The Easy Way        20% discount       $54.50     $10.90     $43.60                                                                                                               
+1915762492 Handcranked Computers          20% discount       $25.00      $5.00     $20.00                                                                                                               
+3957136468 Holy Grail Of Oracle           Fixed Discount     $75.95      $3.80     $72.15                                                                                                               
+0132149871 How To Get Faster Pizza        Fixed Discount     $29.95      $1.50     $28.45                                                                                                               
+9247381001 How To Manage The Manager      20% discount       $31.95      $6.39     $25.56                                                                                                               
+2491748320 Painless Child-Rearing         Fixed Discount     $89.95      $4.50     $85.45                                                                                                               
+0401140733 Revenge Of Mickey              20% discount       $22.00      $4.40     $17.60                                                                                                               
+2147428890 Shortest Poems                 20% discount       $39.95      $7.99     $31.96                                                                                                               
+0299282519 The Wok Way To Cook            20% discount       $28.75      $5.75     $23.00                                                                                                               
+
+14 rows selected.
+
+SQL> 
+SQL> column orderdate format a14
+SQL> column shipdate format a14
+SQL> column "Days to Ship" format a15
+SQL> SELECT initcap(firstname) || ' ' || initcap(lastname) "Customer",	order# "Order #", to_char(orderdate, 'Month dd, yyyy') "Order Date", to_char(shipdate, 'Month dd, yyyy') "Ship Date", nvl(to_char(shipdate - orderdate), 'Not Shipped') "Days to Ship"
+  2  FROM customers JOIN orders using(customer#)
+  3  ORDER BY lastname, order#;
+
+Customer                 Order # Order Date                                    Ship Date                                     Days to Ship                                                               
+--------------------- ---------- --------------------------------------------- --------------------------------------------- ---------------                                                            
+Kenneth Falah               1004 April     01, 2009                            April     05, 2009                            4                                                                          
+Kenneth Falah               1015 April     04, 2009                                                                          Not Shipped                                                                
+Tammy Giana                 1007 April     02, 2009                            April     04, 2009                            2                                                                          
+Tammy Giana                 1014 April     04, 2009                            April     05, 2009                            1                                                                          
+Cindy Girard                1000 March     31, 2009                            April     02, 2009                            2                                                                          
+Cindy Girard                1009 April     03, 2009                            April     05, 2009                            2                                                                          
+Kenneth Jones               1020 April     05, 2009                                                                          Not Shipped                                                                
+Jasmine Lee                 1013 April     03, 2009                            April     04, 2009                            1                                                                          
+Jake Lucas                  1001 March     31, 2009                            April     01, 2009                            1                                                                          
+Jake Lucas                  1011 April     03, 2009                            April     05, 2009                            2                                                                          
+Reese Mcgovern              1002 March     31, 2009                            April     01, 2009                            1                                                                          
+Greg Montiasa               1005 April     01, 2009                            April     02, 2009                            1                                                                          
+Greg Montiasa               1019 April     05, 2009                                                                          Not Shipped                                                                
+Bonita Morales              1003 April     01, 2009                            April     01, 2009                            0                                                                          
+Bonita Morales              1018 April     05, 2009                                                                          Not Shipped                                                                
+Becca Nelson                1012 April     03, 2009                                                                          Not Shipped                                                                
+Thomas Pierson              1008 April     02, 2009                            April     03, 2009                            1                                                                          
+Steve Schell                1017 April     04, 2009                            April     05, 2009                            1                                                                          
+Leila Smith                 1006 April     01, 2009                            April     02, 2009                            1                                                                          
+Jennifer Smith              1010 April     03, 2009                            April     04, 2009                            1                                                                          
+Leila Smith                 1016 April     04, 2009                                                                          Not Shipped                                                                
+
+21 rows selected.
+
+SQL> clear columns;
+SQL> 
+SQL> SELECT initcap(firstname) || ' ' || initcap(lastname) "Customer", order# "Order #", title "Title", to_char(orderdate, 'dd-MON-yy') "Order Date", to_char(pubdate, 'dd-MON-yy') "Pub Date", round(months_between(orderdate, pubdate)) "Months old"
+  2  FROM customers JOIN orders USING(customer#) JOIN orderitems USING (order#) JOIN books USING (isbn)
+  3  ORDER BY lastname, order#;
+
+Customer                 Order # Title                          Order Date         Pub Date           Months old                                                                                        
+--------------------- ---------- ------------------------------ ------------------ ------------------ ----------                                                                                        
+Kenneth Falah               1004 PAINLESS CHILD-REARING         01-APR-09          17-JUL-04                  56                                                                                        
+Kenneth Falah               1015 COOKING WITH MUSHROOMS         04-APR-09          28-FEB-04                  61                                                                                        
+Tammy Giana                 1007 BIG BEAR AND LITTLE DOVE       02-APR-09          08-NOV-05                  41                                                                                        
+Tammy Giana                 1007 E-BUSINESS THE EASY WAY        02-APR-09          01-MAR-06                  37                                                                                        
+Tammy Giana                 1007 HOLY GRAIL OF ORACLE           02-APR-09          31-DEC-05                  39                                                                                        
+Tammy Giana                 1007 DATABASE IMPLEMENTATION        02-APR-09          04-JUN-03                  70                                                                                        
+Tammy Giana                 1014 REVENGE OF MICKEY              04-APR-09          14-DEC-05                  40                                                                                        
+Cindy Girard                1000 COOKING WITH MUSHROOMS         31-MAR-09          28-FEB-04                  61                                                                                        
+Cindy Girard                1009 REVENGE OF MICKEY              03-APR-09          14-DEC-05                  40                                                                                        
+Cindy Girard                1009 COOKING WITH MUSHROOMS         03-APR-09          28-FEB-04                  61                                                                                        
+Kenneth Jones               1020 COOKING WITH MUSHROOMS         05-APR-09          28-FEB-04                  61                                                                                        
+Jasmine Lee                 1013 DATABASE IMPLEMENTATION        03-APR-09          04-JUN-03                  70                                                                                        
+Jake Lucas                  1001 HOW TO MANAGE THE MANAGER      31-MAR-09          09-MAY-03                  71                                                                                        
+Jake Lucas                  1001 PAINLESS CHILD-REARING         31-MAR-09          17-JUL-04                  56                                                                                        
+Jake Lucas                  1011 PAINLESS CHILD-REARING         03-APR-09          17-JUL-04                  57                                                                                        
+Reese Mcgovern              1002 DATABASE IMPLEMENTATION        31-MAR-09          04-JUN-03                  70                                                                                        
+Greg Montiasa               1005 SHORTEST POEMS                 01-APR-09          01-MAY-05                  47                                                                                        
+Greg Montiasa               1019 REVENGE OF MICKEY              05-APR-09          14-DEC-05                  40                                                                                        
+Bonita Morales              1003 COOKING WITH MUSHROOMS         01-APR-09          28-FEB-04                  61                                                                                        
+Bonita Morales              1003 DATABASE IMPLEMENTATION        01-APR-09          04-JUN-03                  70                                                                                        
+Bonita Morales              1003 BODYBUILD IN 10 MINUTES A DAY  01-APR-09          21-JAN-05                  50                                                                                        
+Bonita Morales              1018 DATABASE IMPLEMENTATION        05-APR-09          04-JUN-03                  70                                                                                        
+Bonita Morales              1018 COOKING WITH MUSHROOMS         05-APR-09          28-FEB-04                  61                                                                                        
+Becca Nelson                1012 REVENGE OF MICKEY              03-APR-09          14-DEC-05                  40                                                                                        
+Becca Nelson                1012 PAINLESS CHILD-REARING         03-APR-09          17-JUL-04                  57                                                                                        
+Becca Nelson                1012 BIG BEAR AND LITTLE DOVE       03-APR-09          08-NOV-05                  41                                                                                        
+Becca Nelson                1012 HANDCRANKED COMPUTERS          03-APR-09          21-JAN-05                  50                                                                                        
+Thomas Pierson              1008 COOKING WITH MUSHROOMS         02-APR-09          28-FEB-04                  61                                                                                        
+Steve Schell                1017 BIG BEAR AND LITTLE DOVE       04-APR-09          08-NOV-05                  41                                                                                        
+Leila Smith                 1006 E-BUSINESS THE EASY WAY        01-APR-09          01-MAR-06                  37                                                                                        
+Jennifer Smith              1010 DATABASE IMPLEMENTATION        03-APR-09          04-JUN-03                  70                                                                                        
+Leila Smith                 1016 PAINLESS CHILD-REARING         04-APR-09          17-JUL-04                  57                                                                                        
+
+32 rows selected.
+
+SQL> 
+SQL> SPOOL OFF

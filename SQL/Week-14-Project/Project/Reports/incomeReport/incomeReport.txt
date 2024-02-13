@@ -1,0 +1,66 @@
+SQL> 
+SQL> set linesize 200
+SQL> set pagesize 120
+SQL> set verify off
+SQL> set feedback off
+SQL> clear columns
+SQL> clear breaks
+SQL> clear computes
+SQL> 
+SQL> 
+SQL> ttitle left 'Income Report' skip 2
+SQL> btitle off
+SQL> break on "Customer#" skip 1 on report
+SQL> compute sum label 'Cust Total Value' of "Order Value" on "Customer#"
+SQL> compute num label 'Cust Total Orders' of "Order#" on "Customer#"
+SQL> compute sum label 'Cust Total Values' of "Order Value" on report
+SQL> compute num label 'Cust Total Orders' of "Order#" on report
+SQL> column "Order Value" format $9,990.00
+SQL> column "Customer#" format a20
+SQL> column "Order#" format a20
+SQL> 
+SQL> select co.customer_number "Customer#" , oi.order_number "Order#",	 sum((price * (1 + amt_tax) + ship_amt))  "Order Value"
+  2  from TB_product p join TB_order_item oi ON(p.product_number = oi.product_number)
+  3  	 join TB_customer_order co on(oi.order_number = co.order_number)
+  4  group by co.customer_number, oi.order_number
+  5  order by 1;
+
+Income Report                                                                                                                                                                                           
+                                                                                                                                                                                                        
+Customer#            Order#               Order Value                                                                                                                                                   
+-------------------- -------------------- -----------                                                                                                                                                   
+11                   1111                     $171.70                                                                                                                                                   
+                     1234                   $1,210.00                                                                                                                                                   
+******************** -------------------- -----------                                                                                                                                                   
+Cust Total Orders                       2                                                                                                                                                               
+Cust Total Value                            $1,381.70                                                                                                                                                   
+                                                                                                                                                                                                        
+22                   2222                     $159.70                                                                                                                                                   
+                     4321                      $93.94                                                                                                                                                   
+******************** -------------------- -----------                                                                                                                                                   
+Cust Total Orders                       2                                                                                                                                                               
+Cust Total Value                              $253.64                                                                                                                                                   
+                                                                                                                                                                                                        
+33                   3333                     $673.48                                                                                                                                                   
+******************** -------------------- -----------                                                                                                                                                   
+Cust Total Orders                       1                                                                                                                                                               
+Cust Total Value                              $673.48                                                                                                                                                   
+                                                                                                                                                                                                        
+44                   4444                   $2,140.00                                                                                                                                                   
+******************** -------------------- -----------                                                                                                                                                   
+Cust Total Orders                       1                                                                                                                                                               
+Cust Total Value                            $2,140.00                                                                                                                                                   
+                                                                                                                                                                                                        
+55                   5555                     $236.14                                                                                                                                                   
+******************** -------------------- -----------                                                                                                                                                   
+Cust Total Orders                       1                                                                                                                                                               
+Cust Total Value                              $236.14                                                                                                                                                   
+                                                                                                                                                                                                        
+                     -------------------- -----------                                                                                                                                                   
+Cust Total Orders                       7                                                                                                                                                               
+Cust Total Values                           $4,684.96                                                                                                                                                   
+SQL> 
+SQL> clear columns
+SQL> clear breaks
+SQL> clear computes
+SQL> spool off

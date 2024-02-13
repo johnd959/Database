@@ -1,0 +1,54 @@
+SQL> 
+SQL> DROP TABLE MT_Home CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE MT_Room CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE MT_Furniture CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> CREATE TABLE MT_Furniture(
+  2  	 furniture_id VARCHAR2(60) CONSTRAINT SYS_MT_Furniture_PK PRIMARY KEY,
+  3  	 furniture_name VARCHAR2(60) NOT NULL,
+  4  	 price NUMBER(7,2),
+  5  	 est_value NUMBER(7,2),
+  6  	 height NUMBER(3,2) CONSTRAINT SYS_MT_Furniture_Height_CK CHECK(height > 0) NOT NULL,
+  7  	 depth NUMBER(3,2) CONSTRAINT SYS_MT_Furniture_Depth_CK CHECK(depth > 0) NOT NULL,
+  8  	 furniture_length NUMBER(3,2) CONSTRAINT SYS_MT_Furniture_Length_CK CHECK(furniture_length > 0) NOT NULL
+  9  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE MT_Room(
+  2  	 room_id VARCHAR2(60) CONSTRAINT SYS_MT_Room_PK PRIMARY KEY,
+  3  	 furniture_id VARCHAR2(60) CONSTRAINT SYS_MT_Furniture_Room_FK REFERENCES MT_Furniture (furniture_id) ON DELETE CASCADE,
+  4  	 room_name VARCHAR2(60) NOT NULL,
+  5  	 wall_colour VARCHAR2(60) NOT NULL
+  6  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE MT_Home(
+  2  	 home_id VARCHAR2(60) CONSTRAINT SYS_MT_Home_PK PRIMARY KEY,
+  3  	 room_id VARCHAR2(60) CONSTRAINT SYS_MT_Room_Home_FK REFERENCES MT_Room (room_id) ON DELETE CASCADE NOT NULL,
+  4  	 street VARCHAR2(60) NOT NULL,
+  5  	 city VARCHAR2(60) NOT NULL,
+  6  	 prov CHAR(2) CONSTRAINT SYS_MT_Home_prov_CK CHECK(prov in ('AB', 'BC', 'SK')) NOT NULL,
+  7  	 postal_code CHAR(6) CONSTRAINT SYS_MT_Home_postCode_CK CHECK (regexp_like(postal_code, '[A-Z][0-9][A-z][0-9][A-Z][0-9]')) NOT NULL,
+  8  	 owner_first VARCHAR2(60) NOT NULL,
+  9  	 owner_sur VARCHAR2(60) NOT NULL
+ 10  );
+
+Table created.
+
+SQL> 
+SQL> SPOOL OFF

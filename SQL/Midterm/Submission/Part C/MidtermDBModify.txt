@@ -1,0 +1,26 @@
+SQL> 
+SQL> ALTER TABLE MT_Home
+  2  ADD purchase_price NUMBER(9,2);
+ADD purchase_price NUMBER(9,2)
+    *
+ERROR at line 2:
+ORA-01430: column being added already exists in table 
+
+
+SQL> 
+SQL> ALTER TABLE MT_Furniture
+  2  ADD purchase_date DATE DEFAULT SYSDATE;
+ADD purchase_date DATE DEFAULT SYSDATE
+    *
+ERROR at line 2:
+ORA-01430: column being added already exists in table 
+
+
+SQL> 
+SQL> ALTER TABLE MT_Furniture
+  2  MODIFY (price NOT NULL);
+
+Table altered.
+
+SQL> 
+SQL> SPOOL OFF

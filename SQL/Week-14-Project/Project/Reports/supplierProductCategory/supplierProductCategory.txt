@@ -1,0 +1,31 @@
+SQL> 
+SQL> set linesize 200
+SQL> set pagesize 120
+SQL> 
+SQL> column "Supplier#" format a15
+SQL> column "Supplier Name" format a20
+SQL> column "Product#" format a10
+SQL> column "Product Category#" format a20
+SQL> 
+SQL> select s.supplier_number "Supplier#" , s.supplier_name "Supplier Name", pm.product_number "Product#", category_name "Product Category"
+  2  from TB_supplier s join TB_product_manifest pm on(s.supplier_number = pm.supplier_number)
+  3  	 join TB_product p on(pm.product_number = p.product_number)
+  4  	 join TB_category c on(p.category_num = c.category_num)
+  5  order by 1;
+
+Supplier#       Supplier Name        Product#   Product Category                                                                                                                                        
+--------------- -------------------- ---------- ------------------------------------------------------------                                                                                            
+11              Global Foods         6          Canadian Music                                                                                                                                          
+11111           Hernandez Jessica    1          Books in French                                                                                                                                         
+22222           Guy Saint-Jean 2     2          Books in French                                                                                                                                         
+33333           HyperX               3          PC Gaming                                                                                                                                               
+4               Organic Farms        7          Video Games and Prime Gaming                                                                                                                            
+44421           Green Fields         4          PC Gaming                                                                                                                                               
+55555           Amazon               5          Canadian Music                                                                                                                                          
+
+7 rows selected.
+
+SQL> 
+SQL> 
+SQL> clear columns
+SQL> spool off

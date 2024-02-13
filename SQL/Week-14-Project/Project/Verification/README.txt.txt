@@ -1,0 +1,1 @@
+To start the verification script, type: start '[link to the verification.sql script file]' 

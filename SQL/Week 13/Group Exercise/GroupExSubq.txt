@@ -1,0 +1,144 @@
+SQL> 
+SQL> 
+SQL> --Q1 Solution--
+SQL> SELECT state "ST", customer#, title
+  2  FROM books JOIN orderitems USING(isbn)
+  3  JOIN orders USING(order#)
+  4  JOIN customers USING(customer#)
+  5  WHERE isbn IN (SELECT DISTINCT isbn
+  6  FROM orderitems JOIN orders USING(order#)
+  7  JOIN customers USING(customer#)
+  8  WHERE state = 'TX')
+  9  AND state != 'TX'
+ 10  ORDER BY 3, 1, 2;
+
+ST  CUSTOMER# TITLE                                                                                                                                                                                     
+-- ---------- ------------------------------                                                                                                                                                            
+FL       1015 BIG BEAR AND LITTLE DOVE                                                                                                                                                                  
+MI       1017 BIG BEAR AND LITTLE DOVE                                                                                                                                                                  
+FL       1001 DATABASE IMPLEMENTATION                                                                                                                                                                   
+FL       1001 DATABASE IMPLEMENTATION                                                                                                                                                                   
+IL       1011 DATABASE IMPLEMENTATION                                                                                                                                                                   
+NJ       1019 DATABASE IMPLEMENTATION                                                                                                                                                                   
+WY       1014 DATABASE IMPLEMENTATION                                                                                                                                                                   
+FL       1003 E-BUSINESS THE EASY WAY                                                                                                                                                                   
+GA       1018 REVENGE OF MICKEY                                                                                                                                                                         
+MI       1017 REVENGE OF MICKEY                                                                                                                                                                         
+WA       1005 REVENGE OF MICKEY                                                                                                                                                                         
+
+11 rows selected.
+
+SQL> 
+SQL> --Q2--
+SQL> 
+SQL> /*Intermediate step
+SQL> SELECT isbn, count(DISTINCT state)
+SQL> FROM orderitems JOIN orders USING(order#)
+SQL> JOIN customers USING(customer#)
+SQL> GROUP BY isbn;
+SQL> 
+SQL> -- Intermediate step 2--
+SQL> SELECT max(count(DISTINCT state)) "Different states"
+SQL> FROM orderitems JOIN orders USING(order#)
+SQL> JOIN customers USING(customer#)
+SQL> GROUP BY isbn;
+SQL> 
+SQL> --Intermediate Step 3--
+SQL> 
+SQL> SELECT isbn
+SQL> FROM orderitems
+SQL> JOIN orders USING(order#)
+SQL> JOIN customers USING(customer#)
+SQL> GROUP BY isbn
+SQL> HAVING count(Distinct state) = (SELECT max(count(DISTINCT state)) "Different states"
+SQL> FROM orderitems JOIN orders USING(order#)
+SQL> JOIN customers USING(customer#)
+SQL> GROUP BY isbn);
+SQL> */
+SQL> 
+SQL> --Q2 Solution--
+SQL> SELECT DISTINCT title, state "ST"
+  2  FROM books JOIN orderitems USING(isbn)
+  3  JOIN orders USING(order#)
+  4  JOIN customers USING(customer#)
+  5  WHERE isbn IN (SELECT isbn
+  6  FROM orderitems
+  7  JOIN orders USING(order#)
+  8  JOIN customers USING(customer#)
+  9  GROUP BY isbn
+ 10  HAVING count(Distinct state) = (SELECT max(count(DISTINCT state)) "Different states"
+ 11  FROM orderitems JOIN orders USING(order#)
+ 12  JOIN customers USING(customer#)
+ 13  GROUP BY isbn))
+ 14  ORDER BY 1,2;
+
+TITLE                          ST                                                                                                                                                                       
+------------------------------ --                                                                                                                                                                       
+COOKING WITH MUSHROOMS         FL                                                                                                                                                                       
+COOKING WITH MUSHROOMS         ID                                                                                                                                                                       
+COOKING WITH MUSHROOMS         NJ                                                                                                                                                                       
+COOKING WITH MUSHROOMS         WA                                                                                                                                                                       
+COOKING WITH MUSHROOMS         WY                                                                                                                                                                       
+DATABASE IMPLEMENTATION        FL                                                                                                                                                                       
+DATABASE IMPLEMENTATION        IL                                                                                                                                                                       
+DATABASE IMPLEMENTATION        NJ                                                                                                                                                                       
+DATABASE IMPLEMENTATION        TX                                                                                                                                                                       
+DATABASE IMPLEMENTATION        WY                                                                                                                                                                       
+
+10 rows selected.
+
+SQL> 
+SQL> --Q3--
+SQL> /*SELECT max(count(isbn))
+SQL> FROM orderitems
+SQL> GROUP BY isbn;
+SQL> 
+SQL> SELECT title
+SQL> FROM orderitems
+SQL> JOIN books USING(isbn)
+SQL> GROUP BY title; */
+SQL> 
+SQL> --Q3 Solution--
+SQL> SELECT title
+  2  FROM orderitems
+  3  JOIN books USING (isbn)
+  4  GROUP BY title
+  5  HAVING count(*) = (SELECT max(count(isbn))
+  6  FROM orderitems
+  7  GROUP BY isbn);
+
+TITLE                                                                                                                                                                                                   
+------------------------------                                                                                                                                                                          
+COOKING WITH MUSHROOMS                                                                                                                                                                                  
+
+SQL> 
+SQL> --Q4--
+SQL> 
+SQL> /*SELECT category, max(orderdate)
+SQL> FROM orders JOIN orderitems USING(order#)
+SQL> JOIN books USING(isbn)
+SQL> GROUP BY category; */
+SQL> --Q4--Solution
+SQL> SELECT DISTINCT category, title, orderdate
+  2  FROM orders JOIN orderitems USING(order#)
+  3  JOIN books USING(isbn)
+  4  WHERE (category, orderdate) IN (SELECT category, max(orderdate)
+  5  FROM orders JOIN orderitems USING(order#)
+  6  JOIN books USING(isbn)
+  7  GROUP BY category)
+  8  ORDER BY 1;
+
+CATEGORY     TITLE                          ORDERDATE                                                                                                                                                   
+------------ ------------------------------ ---------                                                                                                                                                   
+BUSINESS     HOW TO MANAGE THE MANAGER      31-MAR-09                                                                                                                                                   
+CHILDREN     BIG BEAR AND LITTLE DOVE       04-APR-09                                                                                                                                                   
+COMPUTER     DATABASE IMPLEMENTATION        05-APR-09                                                                                                                                                   
+COOKING      COOKING WITH MUSHROOMS         05-APR-09                                                                                                                                                   
+FAMILY LIFE  REVENGE OF MICKEY              05-APR-09                                                                                                                                                   
+FITNESS      BODYBUILD IN 10 MINUTES A DAY  01-APR-09                                                                                                                                                   
+LITERATURE   SHORTEST POEMS                 01-APR-09                                                                                                                                                   
+
+7 rows selected.
+
+SQL> 
+SQL> SPOOL OFF

@@ -1,0 +1,33 @@
+SQL> 
+SQL> 
+SQL> --Q1
+SQL> select tour_description "Tour", count(*) "# of destinations", to_char(sum(price), '$9,990.00') "Total"
+  2  from rcv_vacation_tour join rcv_tour_destination using(tour_code) join rcv_destination using(dest_code)
+  3  group by tour_description
+  4  having count(*) > 3;
+
+Tour                                               # of destinations Total                                                                                                                              
+-------------------------------------------------- ----------------- ----------                                                                                                                         
+Paris Highlights                                                   4    $370.63                                                                                                                         
+France in 4 Days                                                   4    $748.41                                                                                                                         
+European Vacation                                                  5  $1,299.47                                                                                                                         
+Paris Culture Tour                                                 4    $792.90                                                                                                                         
+Sights of Barcelona                                                4    $917.43                                                                                                                         
+Palm Springs Adventure                                             4  $1,390.45                                                                                                                         
+Palm Springs Highlights                                            4    $336.17                                                                                                                         
+Calgary Adventure                                                  4    $467.87                                                                                                                         
+Rocky Mountain Experience                                          5  $1,100.60                                                                                                                         
+
+9 rows selected.
+
+SQL> 
+SQL> --Q2
+SQL> select sum(price) "Total for all customers"
+  2  from rcv_tour_customer join rcv_vacation_tour using (tour_code) join rcv_tour_destination using(tour_code) join rcv_destination using (dest_code);
+
+Total for all customers                                                                                                                                                                                 
+-----------------------                                                                                                                                                                                 
+               13651.79                                                                                                                                                                                 
+
+SQL> 
+SQL> SPOOL OFF
